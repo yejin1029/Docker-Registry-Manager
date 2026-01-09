@@ -1,4 +1,4 @@
-# Private Docker Registry Admin API (Flask)
+# 🗂️ Private Docker Registry Admin API (Flask)
 
 ![Type](https://img.shields.io/badge/Type-Platform%20Tool-informational?style=flat-square)
 ![Service](https://img.shields.io/badge/Service-Docker%20Registry%20%2B%20Admin%20API-success?style=flat-square)
@@ -16,7 +16,16 @@ Distribution Registry(registry:2) 위에 **관리용 Flask API**를 얹어,
 
 ---
 
-## Architecture
+## 🧩 Architecture
+
+```mermaid
+flowchart LR
+  C[Client / Operator] -->|REST API| A[Admin API (Flask)\n:5001]
+  A -->|Registry API 호출| R[Docker Registry (registry:2)\n:5000]
+  A --> H[htpasswd\n(Basic Auth user DB)]
+  A --> L[audit.log\n(Activity Audit)]
+  R --> D[(Registry Storage\n./data)]
+```
 
 - `registry:2` : Docker Registry (port 5000)
 - `Flask API` : Admin API (port 5001)
@@ -25,7 +34,16 @@ Distribution Registry(registry:2) 위에 **관리용 Flask API**를 얹어,
 
 ---
 
-## Run (Docker Compose)
+## ✨ Features
+
+- User management via htpasswd: Add / List / Delete
+- Registry browsing: Catalog / Tags
+- Audit logging: 모든 주요 작업을 `audit.log`에 기록하고 사용자/이미지 기준 조회 지원
+- Docker Compose 기반으로 Registry + API 서버를 손쉽게 재현 가능
+
+---
+
+## 🚀 Run (Docker Compose)
 
 ```bash
 mkdir -p auth logs data
@@ -36,7 +54,7 @@ docker compose up -d --build
 
 ---
 
-## Environment Variables
+## ⚙️ Environment Variables
 | Name             | Default                | Description        |
 | ---------------- | ---------------------- | ------------------ |
 | `REGISTRY_URL`   | `http://registry:5000` | Registry 내부 접근 URL |
@@ -45,7 +63,18 @@ docker compose up -d --build
 
 ---
 
-## API Endpoints
+## 🔌 API Endpoints
+
+| Category | Method | Path | Description |
+|---|---:|---|---|
+| Users | POST | `/users` | 사용자 추가 (htpasswd) |
+| Users | GET | `/users` | 사용자 목록 조회 |
+| Users | DELETE | `/users/<user>` | 사용자 삭제 |
+| Images | GET | `/images` | 레지스트리 이미지 목록(catalog) |
+| Images | GET | `/images/<name>/tags` | 특정 이미지 태그 조회 |
+| Tags | DELETE | `/images/<name>/tags/<tag>` | 태그 삭제 |
+| Audit | GET | `/audit?user=<user>` | 사용자별 로그 조회 |
+| Audit | GET | `/audit?image=<image>` | 이미지별 로그 조회 |
 
 ### Add user
 ```bash
