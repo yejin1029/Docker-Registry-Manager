@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  registry:
+    image: registry:2
+    container_name: registry
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/var/lib/registry
+    restart: always
+
+  flask-api:
+    build: .
+    container_name: flask-api
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+    depends_on:
+      - registry
+    restart: always
