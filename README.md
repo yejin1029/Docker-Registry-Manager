@@ -21,7 +21,7 @@ Distribution Registry(registry:2) 위에 **관리용 Flask API**를 얹어,
 ```mermaid
 flowchart LR
   C[Client / Operator] -->|REST API| A[Admin Flask API \n :5001]
-  A -->|Registry API 호출| R[Docker Registry \n :5000]
+  A -->|Registry API 호출| R[Docker Registry <br\> :5000]
   A --> H[htpasswd \n Basic Auth user DB]
   A --> L[audit.log \n Activity Audit]
   R --> D[Registry Storage \n ./data]
