@@ -1,5 +1,10 @@
 # Private Docker Registry Admin API (Flask)
 
+![Type](https://img.shields.io/badge/Type-Platform%20Tool-informational?style=flat-square)
+![Service](https://img.shields.io/badge/Service-Docker%20Registry%20%2B%20Admin%20API-success?style=flat-square)
+![Auth](https://img.shields.io/badge/Auth-htpasswd%20Basic%20Auth-blue?style=flat-square)
+![Logging](https://img.shields.io/badge/Audit-audit.log-9cf?style=flat-square)
+
 Distribution Registry(registry:2) 위에 **관리용 Flask API**를 얹어,
 - htpasswd 기반 사용자 관리(추가/조회/삭제)
 - 레지스트리 Catalog/Tags 조회
