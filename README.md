@@ -1,4 +1,4 @@
-# 🗂️ Private Docker Registry Admin API (Flask)
+# Private Docker Registry Admin API (Flask)
 
 ![Type](https://img.shields.io/badge/Type-Platform%20Tool-informational?style=flat-square)
 ![Service](https://img.shields.io/badge/Service-Docker%20Registry%20%2B%20Admin%20API-success?style=flat-square)
