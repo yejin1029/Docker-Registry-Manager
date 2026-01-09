@@ -20,11 +20,11 @@ Distribution Registry(registry:2) 위에 **관리용 Flask API**를 얹어,
 
 ```mermaid
 flowchart LR
-  C[Client / Operator] -->|REST API| A[Admin Flask API \n :5001]
-  A -->|Registry API 호출| R[Docker Registry <br\> :5000]
-  A --> H[htpasswd \n Basic Auth user DB]
-  A --> L[audit.log \n Activity Audit]
-  R --> D[Registry Storage \n ./data]
+  C[Client / Operator] -->|REST API| A[Admin Flask API <br/> :5001]
+  A -->|Registry API 호출| R[Docker Registry <br/> :5000]
+  A --> H[htpasswd <br/> Basic Auth user DB]
+  A --> L[audit.log <br/> Activity Audit]
+  R --> D[Registry Storage <br/> ./data]
 ```
 
 - `registry:2` : Docker Registry (port 5000)
@@ -105,15 +105,75 @@ curl http://localhost:5001/images/<repo>/tags
 
 ---
 
-## Audit Log
+## ㅅ``bash
+mkdir -p auth logs data
+docker compose up -d --build
+```
+- Registry: http://localhost:5000
+- API: http://localhost:5001
+
+---
+
+## ⚙️ Environment Variables
+| Name             | Default                | Description        |
+| ---------------- | ---------------------- | ------------------ |
+| `REGISTRY_URL`   | `http://registry:5000` | Registry 내부 접근 URL |
+| `HTPASSWD_PATH`  | `/auth/htpasswd`       | htpasswd 파일 경로     |
+| `AUDIT_LOG_PATH` | `/logs/audit.log`      | 감사로그 경로            |
+
+---
+
+## 🔌 API Endpoints
+
+| Category | Method | Path | Description |
+|---|---:|---|---|
+| Users | POST | `/users` | 사용자 추가 (htpasswd) |
+| Users | GET | `/users` | 사용자 목록 조회 |
+| Users | DELETE | `/users/<user>` | 사용자 삭제 |
+| Images | GET | `/images` | 레지스트리 이미지 목록(catalog) |
+| Images | GET | `/images/<name>/tags` | 특정 이미지 태그 조회 |
+| Tags | DELETE | `/images/<name>/tags/<tag>` | 태그 삭제 |
+| Audit | GET | `/audit?user=<user>` | 사용자별 로그 조회 |
+| Audit | GET | `/audit?image=<image>` | 이미지별 로그 조회 |
+
+### Add user
+```bash
+curl -X POST http://localhost:5001/users \
+  -H "Content-Type: application/json" \
+  -d '{"username":"test","password":"test1234"}'
+```
+
+### List users
+```bash
+curl http://localhost:5001/users
+```
+
+### Delete user
+```bash
+curl -X DELETE http://localhost:5001/users/test
+```
+
+### Registry catalog
+```bash
+curl http://localhost:5001/images
+```
+
+### Image tags
+```bash
+curl http://localhost:5001/images/<repo>/tags
+```
+
+---
+
+## 👤 Audit Log
 - 기록 파일: logs/audit.log
 - 사용자/이미지 기준 필터 조회 API 제공
 
-## Security Notes
+## 🔐 Security Notes
 - docker.sock 마운트는 매우 강한 권한을 부여합니다.
 - 본 프로젝트는 학습/실습 목적이며, 운영 환경 적용 시 별도 보안 설계가 필요합니다.
 
-## Known Limitations / TODO
+## ✅ Known Limitations / TODO
 - 이미지 삭제는 Registry API(digest 기반 삭제)로 정교화 필요
 - Auth 적용 범위/권한(Role) 분리 필요
 - API 인증/인가(JWT 등) 및 rate limit 고려 가능
